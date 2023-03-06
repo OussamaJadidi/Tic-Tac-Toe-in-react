@@ -3,61 +3,60 @@ import {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
+
+
 function Game(){
-
-  return(
-    <Squares className="game" style="backgroundColor: red,width: 100px;height: 100px"/> 
-  )
-}
-
-function Squares(){
-  const [isX,SetIsX] =useState(true)
-  const [xy,setXy] = useState([,,,,,,]);
-  function ruleGame(xOrY){
-    let rule=[
-      [0,1,2],[3,4,5],[6,7,8],
-      [0,3,6],[1,4,7],[2,5,8],
-      [0,4,8],[2,4,6]
-    ]
-    for(let i =0; i<rule.length;i++){
-      console.log("no")
-      let [a,b,c]=rule[i]
-      if(xy[a] === xy[b] === xy[c]){
-        document.querySelector(".winner").textContent= "the "+xOrY+" win 🎉🎉🎉"
-        console.log("weee")
-        return true
-      }
-    }
-    return false
-  }
+  const [isX,SetIsX] =useState(false)
+  const [squares,setSquares] = useState([,,,,,,,,]);
+   
+  
   function handleClick(index){
-    if(xy[index]) return
-    let tab = xy.slice();
+    if(squares[index] || clalculateWinner(squares)) return;
+    let tab = squares.slice();
     tab[index] = isX ? "o": "x";
     SetIsX(!isX)
-    setXy(tab)
-    ruleGame(xy)
+    setSquares(tab)
+  }
+  const winner = clalculateWinner(squares)
+  let status;
+  if(winner){
+    status = "The "+winner+" WIN"
+  }else{
+    status = "The "+ (isX ? "O" : "X") + " is next :"
   }
   
   return(
     <>
-      <div className="winner">the winner</div>
+      <div className="status">{status}</div>
       <div>
-        <div className="board-row"><Square xy={xy[0]} onClick={()=>handleClick(0)}/><Square xy={xy[1]} onClick={()=>handleClick(1)}/><Square xy={xy[2]} onClick={()=>handleClick(2)}/></div>
-        <div className="board-row"><Square xy={xy[3]} onClick={()=>handleClick(3)}/><Square xy={xy[4]} onClick={()=>handleClick(4)}/><Square xy={xy[5]} onClick={()=>handleClick(5)}/></div>
-        <div className="board-row"><Square xy={xy[6]} onClick={()=>handleClick(6)}/><Square xy={xy[7]} onClick={()=>handleClick(7)}/><Square xy={xy[8]} onClick={()=>handleClick(8)}/></div>
+        <div className="board-row"><Square xy={squares[0]} onClick={()=>handleClick(0)}/><Square xy={squares[1]} onClick={()=>handleClick(1)}/><Square xy={squares[2]} onClick={()=>handleClick(2)}/></div>
+        <div className="board-row"><Square xy={squares[3]} onClick={()=>handleClick(3)}/><Square xy={squares[4]} onClick={()=>handleClick(4)}/><Square xy={squares[5]} onClick={()=>handleClick(5)}/></div>
+        <div className="board-row"><Square xy={squares[6]} onClick={()=>handleClick(6)}/><Square xy={squares[7]} onClick={()=>handleClick(7)}/><Square xy={squares[8]} onClick={()=>handleClick(8)}/></div>
       </div>
     </>
   )
 }
 function Square({xy,onClick}){
   return (
-    <>
-      <div className="square" onClick={onClick}>
+
+      <button className="square" onClick={onClick}>
         {xy}
-      </div>
-    </>
+      </button>
   )
+}
+function clalculateWinner(Squares){
+  let winningLines=[
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ]
+  for(let i =0; i<winningLines.length;i++){
+    let [a,b,c]=winningLines[i]
+    if(Squares[a] && Squares [a]===Squares[b] && Squares[a]===Squares[c] ){
+      return Squares[a]
+    }
+  }
+  return null
 }
   // ========================================
 
