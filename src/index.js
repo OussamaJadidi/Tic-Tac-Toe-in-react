@@ -8,6 +8,7 @@ import './index.css';
 function Game(){
   const [isX,SetIsX] =useState(false)
   const [squares,setSquares] = useState([,,,,,,,,]);
+  const [progress,setProgress]= useState([[,,,,,,,,]])
    
   
   function handleClick(index){
@@ -16,7 +17,9 @@ function Game(){
     tab[index] = isX ? "o": "x";
     SetIsX(!isX)
     setSquares(tab)
+    setProgress(()=> [...progress,tab])
   }
+
   const winner = clalculateWinner(squares)
   let status;
   if(winner){
@@ -25,6 +28,13 @@ function Game(){
     status = "The "+ (isX ? "O" : "X") + " is next :"
   }
   
+  function handleProgress(index){
+    setSquares(progress[index])
+  }
+
+  let trackPoint = progress.map((porgressPoint,i) =>{
+    return <li key={crypto.randomUUID()} onClick={()=>handleProgress(i)}><button>{i===0 ? "Go to game start":"Go to move"+i}</button></li>
+  })
   return(
     <>
       <div className="status">{status}</div>
@@ -33,6 +43,9 @@ function Game(){
         <div className="board-row"><Square xy={squares[3]} onClick={()=>handleClick(3)}/><Square xy={squares[4]} onClick={()=>handleClick(4)}/><Square xy={squares[5]} onClick={()=>handleClick(5)}/></div>
         <div className="board-row"><Square xy={squares[6]} onClick={()=>handleClick(6)}/><Square xy={squares[7]} onClick={()=>handleClick(7)}/><Square xy={squares[8]} onClick={()=>handleClick(8)}/></div>
       </div>
+      <ol>
+        {trackPoint}
+      </ol>
     </>
   )
 }
